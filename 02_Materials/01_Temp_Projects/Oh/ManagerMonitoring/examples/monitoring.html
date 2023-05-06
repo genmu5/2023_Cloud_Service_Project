@@ -249,7 +249,33 @@
             <div class="col-12">
               <div class="card">
                 <div class="card-header">
-                  <h4 class="card-title">LOG</h4>
+                  <div class="row">
+                    <div class="col-lg-2">
+                      <h4 class="card-title">LOG</h4>
+                    </div>
+                    <div class="col-lg-8">
+                      <form action="/search/result" method="GET">
+                        <input
+                          type="text"
+                          id="searchWord"
+                          name="searchWord"
+                          placeholder="SEARCH"
+                          maxlength="50"
+                          size="60"
+                        />
+                      </form>
+                    </div>
+                    <!-- <input id="searchButton" type="image" src="" style="width:25px; height:25px;" alt="Submit Form"/> -->
+                    <div class="col-lg-2">
+                      <button
+                        class="btn btn-primary btn-block"
+                        onclick="demo.showNotification('bottom','right')"
+                      >
+                        <!-- onclick ==> 검색값 넘겨주기 -->
+                        로그 검색
+                      </button>
+                    </div>
+                  </div>
                 </div>
                 <div class="card-body">
                   <div class="table-responsive">
@@ -273,37 +299,31 @@
                           <td>Minerva Hooper</td>
                           <td>Curaçao</td>
                           <td>Sinaai-Waas</td>
-                          <td class="text-center">$23,789</td>
                         </tr>
                         <tr>
                           <td>Sage Rodriguez</td>
                           <td>Netherlands</td>
                           <td>Baileux</td>
-                          <td class="text-center">$56,142</td>
                         </tr>
                         <tr>
                           <td>Philip Chaney</td>
                           <td>Korea, South</td>
                           <td>Overland Park</td>
-                          <td class="text-center">$38,735</td>
                         </tr>
                         <tr>
                           <td>Doris Greene</td>
                           <td>Malawi</td>
                           <td>Feldkirchen in Kärnten</td>
-                          <td class="text-center">$63,542</td>
                         </tr>
                         <tr>
                           <td>Mason Porter</td>
                           <td>Chile</td>
                           <td>Gloucester</td>
-                          <td class="text-center">$78,615</td>
                         </tr>
                         <tr>
                           <td>Jon Porter</td>
                           <td>Portugal</td>
                           <td>Gloucester</td>
-                          <td class="text-center">$98,615</td>
                         </tr>
                       </tbody>
                     </table>

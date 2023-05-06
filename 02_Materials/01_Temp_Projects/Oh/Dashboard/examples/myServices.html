@@ -194,10 +194,42 @@
           </div>
         </div>
         <!-- End Navbar -->
+        
         <div class="content">
-          <!-- CPU DiskUsage Memory -->
+          <!-- 컨테이너명 -->
           <div class="row">
-            <div class="col-lg-4">
+            <div class="col-12">
+              <div class="card">
+                <div class="card-header">
+                  <div class="row">
+                    <div class="col-lg-1">
+                      <h4 class="card-title">
+                        <i class="tim-icons icon-html5"></i>
+                      </h4>
+                    </div>
+
+                    <div class="col-lg-9">
+                      <!-- 컨테이너명 받아오기 -->
+                      <h4 class="card-title">
+                        <p>Container 1</p>
+                      </h4>
+                    </div>
+                    <!-- 톱니바퀴 클릭 효과 줘야함 ==> 배포관리 페이지로 이동 -->
+                    <div class="col-lg-2">
+                      <h4 class="card-title">
+                        <i class="tim-icons icon-settings-gear-63"></i>
+                      </h4>
+                    </div>
+
+                  </div>                
+                </div>
+              </div>
+            </div>
+         </div>
+
+          <!-- CPU Processes -->
+          <div class="row">
+            <div class="col-lg-6">
               <div class="card card-chart">
                 <div class="card-header">
                   <h3 class="card-title">CPU</h3>
@@ -210,10 +242,10 @@
                 </div>
               </div>
             </div>
-            <div class="col-lg-4">
+            <div class="col-lg-6">
               <div class="card card-chart">
                 <div class="card-header">
-                  <h3 class="card-title">Disk Usage</h3>
+                  <h3 class="card-title">Processes</h3>
                 </div>
                 <div class="card-body">
                   <div class="chart-area">
@@ -223,34 +255,30 @@
                 </div>
               </div>
             </div>
-            <div class="col-lg-4">
+          </div>
+          <!-- Memory Loads -->
+          <div class="row">
+            <div class="col-lg-6">
               <div class="card card-chart">
                 <div class="card-header">
                   <h3 class="card-title">Memory</h3>
                 </div>
                 <div class="card-body">
                   <div class="chart-area">
-                    <!-- <canvas id="chartLineGreen"></canvas> -->
+                    <!-- <canvas id="chartLinePurple"></canvas> -->
                     <!-- 그래프 -->
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-          <!-- NETWORK -->
-          <div class="row">
-            <div class="col-12">
+            <div class="col-lg-6">
               <div class="card card-chart">
                 <div class="card-header">
-                  <div class="row">
-                    <div class="col-sm-6 text-left">
-                      <h2 class="card-title">NETWORK</h2>
-                    </div>
-                  </div>
+                  <h3 class="card-title">Loads</h3>
                 </div>
                 <div class="card-body">
                   <div class="chart-area">
-                    <!-- <canvas id="chartBig1"></canvas> -->
+                    <!-- <canvas id="CountryChart"></canvas> -->
                     <!-- 그래프 -->
                   </div>
                 </div>
@@ -262,7 +290,33 @@
             <div class="col-12">
               <div class="card">
                 <div class="card-header">
-                  <h4 class="card-title">LOG</h4>
+                  <div class="row">
+                    <div class="col-lg-2">
+                      <h4 class="card-title">LOG</h4>
+                    </div>
+                    <div class="col-lg-8">
+                      <form action="/search/result" method="GET">
+                        <input
+                          type="text"
+                          id="searchWord"
+                          name="searchWord"
+                          placeholder="SEARCH"
+                          maxlength="50"
+                          size="60"
+                        />
+                      </form>
+                    </div>
+                      <!-- <input id="searchButton" type="image" src="" style="width:25px; height:25px;" alt="Submit Form"/> -->
+                    <div class="col-lg-2">
+                      <button
+                        class="btn btn-primary btn-block"
+                        onclick="demo.showNotification('bottom','right')"
+                      >
+                          <!-- onclick ==> 검색값 넘겨주기 -->
+                          로그 검색
+                      </button>
+                    </div>
+                  </div>
                 </div>
                 <div class="card-body">
                   <div class="table-responsive">
