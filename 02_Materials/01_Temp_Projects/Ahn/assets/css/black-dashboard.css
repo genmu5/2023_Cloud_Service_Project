@@ -18623,6 +18623,9 @@ code {
   left: auto;
 }
 
+.new-content{
+  padding: 80px 80px 30px 30px;
+}
 .rtl .main-panel .content {
   padding: 80px 280px 30px 30px;
 }
@@ -20443,3 +20446,8 @@ Copyright (c) 2015 Daniel Eden
 }
 
 /*# sourceMappingURL=dashboard-free.css.map */
+
+.no-mp{
+  margin: 0 0 0 0;
+  padding: 0 0 0 0;
+}
