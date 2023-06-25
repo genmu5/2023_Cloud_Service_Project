@@ -16,8 +16,6 @@
   <link href="../assets/css/nucleo-icons.css" rel="stylesheet" />
   <!-- CSS Files -->
   <link href="../assets/css/black-dashboard.css?v=1.0.0" rel="stylesheet" />
-  <!-- CSS Just for demo purpose, don't include it in your project -->
-  <link href="../assets/demo/demo.css" rel="stylesheet" />
 </head>
 
 <body class="">
@@ -25,29 +23,27 @@
     <div class="sidebar">
       <div class="sidebar-wrapper">
         <div class="logo">
-          <a href="./main.html" class="simple-text logo-mini">
+          <a href="javascript:void(0)" class="simple-text logo-mini">
             BP
           </a>
-          <a  class="simple-text logo-normal">
+          <a href="javascript:void(0)" class="simple-text logo-normal">
             My Services
           </a>
         </div>
         <ul class="nav">
           <li class="active ">
-            <a href="./containerList.html"> <!--이동하고자하는 링크--> 
+            <a href="./dashboard.html"> <!--이동하고자하는 링크--> 
               <!-- 아이콘 넣음<i class="tim-icons icon-chart-pie-36"></i>-->
               <p>Service1</p>
             </a>
           </li>
-          <!--
           <li>
             <a href="./icons.html">
               <p>Service2</p>
             </a>
           </li>
-        -->
           <li>
-            <a href="./deploy.html">
+            <a href="./map.html">
               <p>New Service</p>
             </a>
           </li>
@@ -67,7 +63,7 @@
                 <span class="navbar-toggler-bar bar3"></span>
               </button>
             </div>
-            <a class="navbar-brand" href="./main.html">BaePo</a>
+            <a class="navbar-brand" href="javascript:void(0)">BaePo</a>
           </div>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-bar navbar-kebab"></span>
@@ -87,7 +83,7 @@
                   <li class="nav-link"><a href="./mypage.html" class="nav-item dropdown-item">Profile</a></li>
                   <li class="nav-link"><a href="#" class="nav-item dropdown-item">Guide</a></li>
                   <li class="dropdown-divider"></li>
-                  <li class="nav-link"><a href="javascript:void(0)" class="nav-item dropdown-item">Log out</a></li>
+                  <li class="nav-link"><a href="#" class="nav-item dropdown-item">Log out</a></li>
                 </ul>
               </li>
               <li class="separator d-lg-none"></li>
@@ -115,16 +111,38 @@
           <div class="col-md-12">
             <div class="card">
               <div class="card-header">
-                <h3 class="card-title">컨테이너 추가하기</h3>
+                <div class="row">
+                  <button type="button" title class="btn btn-primary btn-link" data-original-title="return to list">
+                    <i class="tim-icons icon-double-right"></i>
+                  </button>
+                  <h3 class="card-title my-auto">Services</h3>
+                </div>
               </div>
+
               <div class="card-body">
                 <form>
+                  <div class="row">
+                    <div class="col-12">
+                      <div class="form-group">
+                        <h4 class="my-2">배포 설정</h5>
+                      </div>
+                    </div>
+                  </div>
 
                   <div class="row">
                     <div class="col-12">
                       <div class="form-group">
-                        <h5 class="my-2">컨테이너 이름</h5>
-                        <input type="text" class="form-control" placeholder="컨테이너의 이름을 입력하세요">
+                        <h5 class="my-2">배포 국가</h5>
+                        <input type="text" class="form-control" placeholder="배포 국가를 선택하세요">
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-12">
+                      <div class="form-group">
+                        <h5 class="my-2">개발언어</h5>
+                        <input type="text" class="form-control" placeholder="개발언어를 선택하세요">
                       </div>
                     </div>
                   </div>
@@ -149,20 +167,19 @@
                     </div>
                   </div>
 
-                  <div class="row">
-                    <div class="col-12">
-                      <div class="form-group">
-                        <h5 class="my-2">배포 국가</h5>
-                        <input type="text" class="form-control" placeholder="배포 국가를 선택하세요">
-                      </div>
-                    </div>
-                  </div>
 
                 </form>
               </div>
 
               <div class="card-footer text-center">
-                <button type="submit" class="btn btn-fill btn-primary">배포하기</button>
+                <div class="row">
+                  <div class="col-11">
+                    <button type="submit" class="btn btn-fill btn-primary">수정&업데이트</button>
+                  </div>
+                  <div class="col-1">
+                    <button type="submit" class="btn btn-fill btn-primary">삭제하기</button>
+                  </div>
+                </div>
               </div>
 
             </div>
