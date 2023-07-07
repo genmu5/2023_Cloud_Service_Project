@@ -52,12 +52,13 @@ if [ -e "$FILE" ]; then
     			echo "    image: mysql" >> docker-compose.yml
     			echo "    restart: always" >> docker-compose.yml
     			echo "    environment:" >> docker-compose.yml
-      			echo "      MYSQL_ROOT_PASSWORD: your_mysql_root_password" >> docker-compose.yml
-      			echo "      MMYSQL_DATABASE: your_mysql_database_name" >> docker-compose.yml
-      			echo "      MMYSQL_USER: your_mysql_username" >> docker-compose.yml
-      			echo "      MMYSQL_PASSWORD: your_mysql_password" >> docker-compose.yml
+      			echo "      MYSQL_ROOT_PASSWORD: 123456" >> docker-compose.yml
+      			echo "      MYSQL_DATABASE: database" >> docker-compose.yml
+      			echo "      MYSQL_USER: user" >> docker-compose.yml
+      			echo "      MYSQL_PASSWORD: 123456" >> docker-compose.yml
 			echo "    volumes:" >> docker-compose.yml
-			echo "    - /var/lib/jenkins/workspace/Yoontest/sql:/var/lib/mysql" >> docker-compose.yml
+			echo "    - /var/lib/jenkins/workspace/Yoontest/sql:/docker-entrypoint-initdb.d/" >> docker-compose.yml
+                        echo "    command: [\"--init-file\", \"/docker-entrypoint-initdb.d/*\"]" >> docker-compose.yml
                         ;;                                                                                                                                                                                                                                                        
                 8)      echo "mssql"                                                                                                                                                                                                                                              
                         echo "RUN apt-get install -y wget" >> db                                                                                                                                                                                                                  

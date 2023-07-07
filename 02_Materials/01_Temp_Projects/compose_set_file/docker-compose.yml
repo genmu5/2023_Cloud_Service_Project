@@ -5,20 +5,21 @@ services:
     ports:
       - 3333:80
     volumes:
-      - /home/sjmama/frontend:/usr/share/nginx/html
+      - /var/lib/jenkins/workspace/Yoontest/frontend:/usr/share/nginx/html
   db:
     image: mysql
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: your_mysql_root_password
-      MMYSQL_DATABASE: your_mysql_database_name
-      MMYSQL_USER: your_mysql_username
-      MMYSQL_PASSWORD: your_mysql_password
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: database
+      MYSQL_USER: user
+      MYSQL_PASSWORD: 123456
     volumes:
-    - /home/sjmama/sql:/var/lib/mysql
+    - /var/lib/jenkins/workspace/Yoontest/sql:/docker-entrypoint-initdb.d/
+    command: ["--init-file", "/docker-entrypoint-initdb.d/*"]
   backend:
     volumes:
-      - /home/sjmama/backend:/backend
+      - /var/lib/jenkins/workspace/Yoontest/backend:/backend
     build:
       context: .
       dockerfile: pydockerfile
