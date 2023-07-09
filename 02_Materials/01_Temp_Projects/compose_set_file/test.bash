@@ -14,7 +14,7 @@ if [ -e "$FILE" ]; then
                         echo "    ports:" >> docker-compose.yml
                         echo "      - \"80:80\"" >> docker-compose.yml
                         echo "    volumes:" >> docker-compose.yml
-                        echo "      - /var/lib/jenkins/workspace/Yoontest/frontend:/var/www/html" >> docker-compose.yml
+                        echo "      - /var/lib/jenkins/workspace/keepgo/frontend:/var/www/html" >> docker-compose.yml
                         ;;
                 1)      echo "nginx"
 			echo "  frontend:" >> docker-compose.yml
@@ -23,7 +23,7 @@ if [ -e "$FILE" ]; then
                         echo "    ports:" >> docker-compose.yml
                         echo "      - 3333:80" >> docker-compose.yml
                         echo "    volumes:" >> docker-compose.yml
-                        echo "      - /var/lib/jenkins/workspace/Yoontest/frontend:/usr/share/nginx/html" >> docker-compose.yml
+                        echo "      - /var/lib/jenkins/workspace/keepgo/frontend:/usr/share/nginx/html" >> docker-compose.yml
 
 
                         ;;
@@ -57,7 +57,7 @@ if [ -e "$FILE" ]; then
       			echo "      MYSQL_USER: user" >> docker-compose.yml
       			echo "      MYSQL_PASSWORD: 123456" >> docker-compose.yml
 			echo "    volumes:" >> docker-compose.yml
-			echo "    - /var/lib/jenkins/workspace/Yoontest/sql:/docker-entrypoint-initdb.d/" >> docker-compose.yml
+			echo "    - /var/lib/jenkins/workspace/keepgo/sql:/docker-entrypoint-initdb.d/" >> docker-compose.yml
                         echo "    command: [\"--init-file\", \"/docker-entrypoint-initdb.d/*\"]" >> docker-compose.yml
                         ;;                                                                                                                                                                                                                                                        
                 8)      echo "mssql"                                                                                                                                                                                                                                              
@@ -76,7 +76,7 @@ if [ -e "$FILE" ]; then
 			mkdir backend && mv *.py backend/
 			echo "  backend:" >> docker-compose.yml
 			echo "    volumes:" >> docker-compose.yml
-			echo "      - /var/lib/jenkins/workspace/Yoontest/backend:/backend" >> docker-compose.yml
+			echo "      - /var/lib/jenkins/workspace/keepgo/backend:/backend" >> docker-compose.yml
 			echo "    build:" >> docker-compose.yml
 			echo "      context: ." >> docker-compose.yml
 			echo "      dockerfile: pydockerfile" >> docker-compose.yml
