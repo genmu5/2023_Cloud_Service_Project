@@ -24,6 +24,7 @@ if [ -e "$FILE" ]; then
                         echo "      - 3333:80" >> docker-compose.yml
                         echo "    volumes:" >> docker-compose.yml
                         echo "      - /var/lib/jenkins/workspace/keepgo/frontend:/usr/share/nginx/html" >> docker-compose.yml
+                        echo "      - /var/lib/jenkins/workspace/nginx.conf:/etc/nginx/nginx.conf" >> docker-compose.yml
 
 
                         ;;
@@ -47,17 +48,17 @@ if [ -e "$FILE" ]; then
                         echo "RUN java java -jar \'springboot.jar\'" >> front                                                                                                                                                                                                     
                         ;;                                                                                                                                                                                                                                                        
                 7)      echo "mysql"
-			mkdir sql && mv *.sql sql/
-			echo "  db:" >> docker-compose.yml
-    			echo "    image: mysql" >> docker-compose.yml
-    			echo "    restart: always" >> docker-compose.yml
-    			echo "    environment:" >> docker-compose.yml
-      			echo "      MYSQL_ROOT_PASSWORD: 123456" >> docker-compose.yml
-      			echo "      MYSQL_DATABASE: database" >> docker-compose.yml
-      			echo "      MYSQL_USER: user" >> docker-compose.yml
-      			echo "      MYSQL_PASSWORD: 123456" >> docker-compose.yml
-			echo "    volumes:" >> docker-compose.yml
-			echo "    - /var/lib/jenkins/workspace/keepgo/sql:/docker-entrypoint-initdb.d/" >> docker-compose.yml
+                        mkdir sql && mv *.sql sql/
+                        echo "  db:" >> docker-compose.yml
+                        echo "    image: mysql" >> docker-compose.yml
+                        echo "    restart: always" >> docker-compose.yml
+                        echo "    environment:" >> docker-compose.yml
+                        echo "      MYSQL_ROOT_PASSWORD: 123456" >> docker-compose.yml
+                        echo "      MYSQL_DATABASE: database" >> docker-compose.yml
+                        echo "      MYSQL_USER: user" >> docker-compose.yml
+                        echo "      MYSQL_PASSWORD: 123456" >> docker-compose.yml
+                        echo "    volumes:" >> docker-compose.yml
+                        echo "    - /var/lib/jenkins/workspace/keepgo/sql:/docker-entrypoint-initdb.d/" >> docker-compose.yml
                         echo "    command: [\"--init-file\", \"/docker-entrypoint-initdb.d/*\"]" >> docker-compose.yml
                         ;;                                                                                                                                                                                                                                                        
                 8)      echo "mssql"                                                                                                                                                                                                                                              
@@ -79,7 +80,7 @@ if [ -e "$FILE" ]; then
 			echo "      - /var/lib/jenkins/workspace/keepgo/backend:/backend" >> docker-compose.yml
 			echo "    build:" >> docker-compose.yml
 			echo "      context: ." >> docker-compose.yml
-			echo "      dockerfile: pydockerfile" >> docker-compose.yml
+			echo "      dockerfile: /var/lib/jenkins/workspace/pydockerfile" >> docker-compose.yml
 			echo "    restart: always" >> docker-compose.yml
                         ;;                                                                                                                                                                                                                                                        
                 12)     echo "c#"                                                                                                                                                                                                                                                 
@@ -94,6 +95,6 @@ if [ -e "$FILE" ]; then
         fi
         count=$(($count+1))
     done
-
+	docker-compose up --build -d
 fi
 
