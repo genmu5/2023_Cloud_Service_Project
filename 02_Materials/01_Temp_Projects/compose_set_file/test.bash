@@ -55,7 +55,7 @@ if [ -e "$FILE" ]; then
                         echo "    environment:" >> docker-compose.yml
                         echo "      MYSQL_ROOT_PASSWORD: 123456" >> docker-compose.yml
                         echo "      MYSQL_DATABASE: db_1" >> docker-compose.yml
-                        echo "      MYSQL_USER: dbuser1" >> docker-compose.yml
+                        echo "      MYSQL_USER: user" >> docker-compose.yml
                         echo "      MYSQL_PASSWORD: 123456" >> docker-compose.yml
                         echo "    volumes:" >> docker-compose.yml
                         echo "    - /var/lib/jenkins/workspace/keepgo/sql:/docker-entrypoint-initdb.d/" >> docker-compose.yml

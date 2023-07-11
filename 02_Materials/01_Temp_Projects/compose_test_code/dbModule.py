@@ -13,7 +13,7 @@ class Database():
         self.cursor = self.db.cursor(pymysql.cursors.DictCursor)
  
     def execute(self, query, args={}):
-        self.cursor.execute(query, args)  
+        self.cursor.execute(query, args)
  
     def executeOne(self, query, args={}):
         self.cursor.execute(query, args)

@@ -25,7 +25,7 @@ def index():
 def insert():
     db_class = dbModule.Database()
  
-    sql      = "INSERT INTO testDB.testTable(test) \
+    sql      = "INSERT INTO db_1.testTable(test) \
                 VALUES('%s')" % ('testData')
     db_class.execute(sql)
     db_class.commit()
@@ -43,7 +43,7 @@ def select():
     db_class = dbModule.Database()
  
     sql      = "SELECT idx, test \
-                FROM testDB.testTable"
+                FROM db_1.testTable"
     row      = db_class.executeAll(sql)
  
     print(row)
@@ -60,14 +60,14 @@ def select():
 def update():
     db_class = dbModule.Database()
  
-    sql      = "UPDATE testDB.testTable \
+    sql      = "UPDATE db_1.testTable \
                 SET test='%s' \
                 WHERE test='testData'" % ('update_Data')
     db_class.execute(sql)    
     db_class.commit()
  
     sql      = "SELECT idx, test \
-                FROM testDB.testTable"
+                FROM db_1.testTable"
     row      = db_class.executeAll(sql)
  
     return render_template('/test/test.html',
