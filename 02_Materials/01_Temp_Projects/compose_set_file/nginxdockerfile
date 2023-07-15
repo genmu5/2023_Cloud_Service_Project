@@ -1,0 +1,4 @@
+FROME nginx:latest
+RUN service nginx start
+COPY /var/lib/jenkins/workspace/keepgo/frontend /usr/share/nginx/html
+COPY /var/lib/jenkins/workspace/nginx.conf /etc/nginx/nginx.conf
