@@ -1,7 +1,6 @@
 FROM python:latest
 WORKDIR /backend
-RUN ls /backend
-COPY /backend /backend
+COPY ./backend /backend
 RUN pip install Flask
 RUN pip install pymysql
 CMD ["python", "test.py"]
