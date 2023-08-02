@@ -1,4 +1,4 @@
-FROME nginx:latest
+FROM nginx:latest
 RUN service nginx start
 COPY ./frontend /usr/share/nginx/html
 COPY ./nginx.conf /etc/nginx/nginx.conf

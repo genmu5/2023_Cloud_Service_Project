@@ -1,6 +1,7 @@
 FROM python:latest
 WORKDIR /backend
-COPY ./backend /backend
-RUN pip install Flask
-RUN pip install pymysql
-CMD ["python", "test.py"]
+RUN ls /backend
+COPY /backend /backend
+RUN pip install --upgrade pip
+RUN pip install -r /backend/requirements.txt
+CMD ["python", "main.py"]
