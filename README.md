@@ -1,5 +1,5 @@
 # 2023_Cloud_Service_Project
----
+
 # Nonstop
 쿠버네티스를 활용한 자동 이중화 배포 서비스
 
@@ -29,6 +29,7 @@
 배포된 서비스의 정보를 모니터링하며 사용된 리소스량과 배포 상태를 시각적으로 확인할 수 있다.
 
 ## Process
+![Alt text](image.png)
 1. 웹에서 사용자 코드를 .zip으로 업로드
 2. 코드를 unzip하여 github에 사용자별 디렉토리 생성하여 push
 3. Jenkins Webhook으로 파이프라인 실행
