@@ -11,54 +11,38 @@ spec:
     metadata:
       labels:
         app: nginx
-    spec:
-      volumes:
-      - name: data-volume
-        emptyDir: {} # kubernetes volume 종류중 하나 / https://kubernetes.io/docs/concepts/storage/volumes/ 참고자료
-      - name: setting-volume
-        emptyDir: {}
-      
       containers:
+        - name: database
+          image: mysql:latest
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-credential
+                  key: password
+                  # 시크릿 키 적용 명령어
+                  # echo -n "root" > ./username
+                  # echo -n "비밀번호" > ./password 
+                  # k create secret generic mysql-credential --from-fle=./username --from-file=./password
+            - name: MYSQL_DATABASE  # 데이터베이스 이름 환경변수
+              value: petclinic  # 설정
+          volumeMounts:
+            - name: nfs-pv-test
+              mountPath: /var/lib/mysql
+              readOnly: false
+
         - name: frontend
           image: nginx:latest
-          ports:
-            - containerPort: 80
-          volumeMounts: # 컨테이너안에서 마운트할 경로 선언, 컨테이너 안에 해당 디렉토리가 없으면 생성
-          - name: data-volume
-            mountPath: /var/lib/jenkins/workspace/keepgo/frontend:/usr/share/nginx/html
-          - name: setting-volume 
-            mountPath: /var/lib/jenkins/workspace/nginx.conf:/etc/nginx/nginx.conf
         
         - name: backend # pydockerfile 내용 반영
           image: python:latest
-          workingDir: /backend  # WORKDIR /backend (추가해야되는지 모르겠음)
-          command: ["python", "test.py"]  # CMD ["python", "test.py"]
-          ports:
-          - containerPort: 8080
-          volumeMounts:
-          - name: data-volume
-          mountPath: /var/lib/jenkins/workspace/keepgo/backend:/backend
         
-        - name: database
-          image: mysql:latest
-          ports:
-          - containerPort: 3306
-          env: # 환경 변수 선언 형식 바꿈
-            - name: MYSQL_ROOT_PASSWORD
-              value: "123456"
-            - name: MYSQL_DATABASE
-              value: "db_1"
-            - name: MYSQL_USER
-              value: "user"
-            - name: MYSQL_PASSWORD
-              value: "123456"
+      volumes:
+        - name: nfs-pv-test
+          persistentVolumeClaim:
+            claimName: nfs-pvc-test
 
-          volumeMounts:
-          - name: data-volume
-          mountPath: /var/lib/jenkins/workspace/keepgo/sql:/docker-entrypoint-initdb.d
-          - name: setting-volume
-          mountPath: /var/lib/jenkins/workspace/empty:/var/lib/mysql
-          command: ["--init-file", "/docker-entrypoint-initdb.d/test.sql"]
+          
 # ---
 # apiVersion: v1
 # kind: Service
