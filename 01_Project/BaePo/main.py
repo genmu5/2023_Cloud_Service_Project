@@ -102,6 +102,32 @@ def my_page():
             return "User not found"
         return render_template('mypage.html', useremail=user_email, userDate=user_registeration)
 ######################################################################################################################################
+# 회원탈퇴 - 로그아웃 & data.json/user.json 에서 데이터 삭제
+@app.route('/withdrawal', methods=['POST', 'GET'])
+def withdrawal():
+    user_email = oauth2.email               # 사용자 이메일
+
+    # 파일에서 데이터 불러오기
+    with open(data_file_path, 'r', encoding='utf-8') as fp:
+        user_data = json.load(fp)  # user_data 불러오기
+    with open(user_file_path, 'r', encoding='utf-8') as fp:
+        user_list = json.load(fp)  # user_list 불러오기
+
+    # 키가 존재하면 삭제
+    if user_email in user_data:
+        del user_data[user_email]
+    if user_email in user_list:
+        del user_list[user_email]
+
+    # JSON 파일에 데이터를 저장 (ensure_ascii 옵션을 False로 설정하여 한글이 유니코드로 저장되도록 함)
+    with open(data_file_path, 'w', encoding='utf-8') as fp:
+        json.dump(user_data, fp, sort_keys=True, indent=4, ensure_ascii=False)
+    with open(user_file_path, 'w', encoding='utf-8') as fp:
+        json.dump(user_list, fp, sort_keys=True, indent=4, ensure_ascii=False)
+
+    session.clear()
+    return ('', 204)
+######################################################################################################################################
 # 사용자별 배포 목록
 # 사용자 이름과 배포명 추가 -> json 파일로 저장
 # 사용자 이름 해당하면 배포명 (리스트) json dump 반환
@@ -122,7 +148,7 @@ def containerDeploy_page():
         user_name = user_email.replace('@', '').replace('.', '')
         namespace = user_name+'-'+program_name
 
-        # json 데이터 초기화
+        # json 데이터 초기화 & data.json 파일에 데이터 저장 ------------------------------------------------------------------------------------------------------
         containers = []
         envx = [0]*17
         front = {}
@@ -131,20 +157,7 @@ def containerDeploy_page():
         frontStatus = []
         backStatuse = []
         dbStatus = []
-        # 프론트/백/DB -> json 파일에 서비스명 + 컨테이너명(서비스명_Front/서비스면_Back/서비스명_DB) 설정
-        # 'state' 컨테이너 status 값 파싱 & JSON 파일에 저장
-        result_dict = getContainerStatus(namespace)
-        getServiceIP = returnServicetIP(namespace)
-        for dict_name in result_dict:
-            if 'frontend-deployment' in dict_name:
-                frontStatus.append(result_dict[dict_name])
-            elif 'backend-deployment' in dict_name:
-                backStatuse.append(result_dict[dict_name])
-            elif 'db-deployment' in dict_name:
-                dbStatus.append(result_dict[dict_name])
-        front['state'] = frontStatus
-        back['state'] = backStatuse
-        db['state'] = dbStatus
+
         # 'name'
         if front_env!=[]:
                 front['name'] = program_name+'_Front'
@@ -165,7 +178,6 @@ def containerDeploy_page():
         print('envx', envx)
 
         # json 파일의 containers 객체 설정
-
         if front_env!=[]:
             front['env'] = front_env
             containers.append(front)
@@ -175,26 +187,6 @@ def containerDeploy_page():
         if db_env!=[]:
             db['env'] = db_env
             containers.append(db)
-
-        # 사용자 이메일을 기준으로 데이터가 있는지 확인하고 데이터 추가 또는 새로운 사용자 JSON 객체 생성
-        if oauth2.email in user_data:
-            user_data[oauth2.email].append({
-                'Service Name': program_name,
-                'Containers' : containers,
-                'Creating Date' : today_date,
-                'Service IP' : getServiceIP
-            })
-        else:
-            user_data[oauth2.email] = [{
-                'Service Name': program_name,
-                'Containers' : containers,
-                'Creating Date' : today_date,
-                'Service IP' : getServiceIP
-            }]
-
-        # JSON 파일에 데이터를 저장 (ensure_ascii 옵션을 False로 설정하여 한글이 유니코드로 저장되도록 함)
-        with open(data_file_path, 'w', encoding='utf-8') as fp:
-            json.dump(user_data, fp, sort_keys=True, indent=4, ensure_ascii=False)
 
         # 소스코드 unzip 하고 저장하기 ------------------------------------------------------------------------------------------------------
         user_name = ""              # 사용자 명 파싱하기 - 이메일 값에서 특수문자 제외
@@ -231,11 +223,54 @@ def containerDeploy_page():
         #     upload_to_github(os.path.join(BASE_DIR, 'test_upload'))
         # else:
         #     return '.zip 파일을 업로드 해주세요.'
+ 
+        # IP 생성까지 반복 호출 -----------------------------------------------------------------------------
+        # while True:
+        #     if returnServicetIP(namespace):
+        #         break
 
+        # 프론트/백/DB -> json 파일에 서비스명 + 컨테이너명(서비스명_Front/서비스면_Back/서비스명_DB) 설정
+        # 'state' 컨테이너 status 값 파싱 & JSON 파일에 저장
+        result_dict = getContainerStatus(namespace)     # 컨테이너 상태값(status) 확인
+        getServiceIP = returnServicetIP(namespace)      # 배포된 IP 가져오기
+        for dict_name in result_dict:
+            if 'frontend-deployment' in dict_name:
+                frontStatus.append(result_dict[dict_name])
+            elif 'backend-deployment' in dict_name:
+                backStatuse.append(result_dict[dict_name])
+            elif 'db-deployment' in dict_name:
+                dbStatus.append(result_dict[dict_name])
+        front['state'] = frontStatus
+        back['state'] = backStatuse
+        db['state'] = dbStatus
+
+        # 사용자 이메일을 기준으로 데이터가 있는지 확인하고 데이터 추가 또는 새로운 사용자 JSON 객체 생성
+        if oauth2.email in user_data:
+            user_data[oauth2.email].append({
+                'Service Name': program_name,
+                'Containers' : containers,
+                'Creating Date' : today_date,
+                'Service IP' : getServiceIP
+            })
+        else:
+            user_data[oauth2.email] = [{
+                'Service Name': program_name,
+                'Containers' : containers,
+                'Creating Date' : today_date,
+                'Service IP' : getServiceIP
+            }]
+
+        # JSON 파일에 데이터를 저장 (ensure_ascii 옵션을 False로 설정하여 한글이 유니코드로 저장되도록 함)
+        with open(data_file_path, 'w', encoding='utf-8') as fp:
+            json.dump(user_data, fp, sort_keys=True, indent=4, ensure_ascii=False)
+
+        # if returnServicetIP(namespace) != '':
         return render_template('containerList.html')
+        
     elif request.method == 'GET':
-        # state 수정해주어야 함.
-        return json.dumps({oauth2.email: user_data[oauth2.email]}, ensure_ascii=False)
+        # while True:     # 무한 반복이므로 배포 실패했을 경우, 타임아웃을 걸어서 Fail 반환하도록
+        #     if returnServicetIP(namespace) != '':
+                return json.dumps({oauth2.email: user_data[oauth2.email]}, ensure_ascii=False)
     return 'Fail'
 ######################################################################################################################################
 # 업데이트 & 수정
@@ -251,7 +286,8 @@ def containerEditDeploy_page(service_name):
         user_name = user_email.replace('@', '').replace('.', '')
         namespace = user_name+'-'+program_name
 
-        # 해당 사용자의 컨테이너 리스트 데이터 가져오기
+        # IP 생성되면 JSON 파일에 데이터 저장하기    
+        # 해당 사용자의 컨테이너 리스트 데이터 가져오기 ------------------------------------------------------------------------------------------------------
         getUserData = user_data[oauth2.email]
         # 컨테이너 status 값 파싱
         result_dict = getContainerStatus(namespace)
@@ -291,10 +327,6 @@ def containerEditDeploy_page(service_name):
             envxa[be] = 1
         print('envxa', envxa)
 
-        # JSON 파일에 데이터를 저장 (ensure_ascii 옵션을 False로 설정하여 한글이 유니코드로 저장되도록 함)
-        with open(data_file_path, 'w', encoding='utf-8') as fp:
-            json.dump(user_data, fp, sort_keys=True, indent=4, ensure_ascii=False)
-
         # 소스코드 unzip 하고 저장하기 ------------------------------------------------------------------------------------------------------
         user_name = ""              # 사용자 명 파싱하기 - 이메일 값에서 특수문자 제외
         user_name = user_email.replace('@', '').replace('.', '')
@@ -330,11 +362,20 @@ def containerEditDeploy_page(service_name):
         # else:
         #     return '.zip 파일을 업로드 해주세요.'
 
-        # 응답으로 JSON 형식의 데이터 반환
+        # while True:
+        #     if returnServicetIP(namespace):
+        #         break
+
+        # JSON 파일에 데이터를 저장 (ensure_ascii 옵션을 False로 설정하여 한글이 유니코드로 저장되도록 함)
+        with open(data_file_path, 'w', encoding='utf-8') as fp:
+            json.dump(user_data, fp, sort_keys=True, indent=4, ensure_ascii=False)
+
+        # if returnServicetIP(namespace) != '':
         return make_response('', 204)
     elif request.method == 'GET':
-        # state 수정해주어야 함.
-        return json.dumps({oauth2.email: user_data[oauth2.email]}, ensure_ascii=False)
+        # while True:     # 무한 반복이므로 배포 실패했을 경우, 타임아웃을 걸어서 Fail 반환하도록
+        #     if returnServicetIP(namespace) != '':
+                return json.dumps({oauth2.email: user_data[oauth2.email]}, ensure_ascii=False)
 ######################################################################################################################################
 # 컨테이너 제어 작업 / pip install paramiko
 # run / pause / refresh  동작 버튼 
@@ -500,9 +541,7 @@ def returnServicetIP(namespace):
             getIP = columns[3]
             break
     # 딕셔너리에 name을 키로, status를 값으로 저장
-
     ssh.close()
-
     return getIP # NAME : STATUS 파싱한 딕셔너리 반환
 ######################################################################################################################################
 # 컨테이너 status 확인 (Running/Stop/Pending/error 등) / pip install paramiko
@@ -551,18 +590,18 @@ def upload_to_github(local_path):
         #subprocess.call(['git', 'init'], cwd=local_path, shell=True)
 
         # git pull 먼저 실행
-        subprocess.call(['git', 'pull'], cwd=local_path, shell=True)
+        subprocess.call(['git pull origin main'], cwd=local_path, shell=True)
 
         # 모든 파일을 스테이징
-        subprocess.call(['git', 'add', '.'], cwd=local_path, shell=True)
+        subprocess.call(['git add .'], cwd=local_path, shell=True)
 
         # 커밋 메시지 작성
-        commit_message = 'File upload'
-        subprocess.call(['git', 'commit', '-m', commit_message], cwd=local_path, shell=True)
+        commit_message = oauth2.email
+        subprocess.call(['git commit -m', commit_message], cwd=local_path, shell=True)
 
         # GitHub 원격 저장소로 푸시 / origin master 브랜치로 생성해야 push 됨 // 리포지토리 수정 필요!!!!!!!!!!!!!!!
-        subprocess.call(['git', 'push'], cwd=local_path, shell=True)
-#, 'https://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@github.com/teamnonstop/test_upload.git'
+        subprocess.call(['git push origin main'], cwd=local_path, shell=True)
+# 'https://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@github.com/teamnonstop/test_upload.git'
     except subprocess.CalledProcessError as e:
         print(f"Error occurred during Git commands: {e}")
         # 예외 처리
