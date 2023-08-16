@@ -133,7 +133,7 @@ $(document).ready(function () {
 /* function ==========================================================================================================*/
 /*===========================================================================================================================*/
 
-async function handlFormSubmit(event){
+async function handlFormSubmit(event){ //기존 form 액션말고 fetch로 변경
   const form=document.querySelector("form#deployForm");
   event.preventDefault();
   const requestURI = "/services";
