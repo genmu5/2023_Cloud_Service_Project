@@ -327,3 +327,7 @@ function handleNavElementClick(event, userData) {
 function fileUploadRuleModal() {
   $("#fileUploadRuleModal").modal("show");
 }
+
+function deleteModal() {
+  $("#deleteModal").modal("show");
+}
