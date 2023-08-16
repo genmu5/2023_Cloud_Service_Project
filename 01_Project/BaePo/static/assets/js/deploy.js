@@ -134,6 +134,7 @@ $(document).ready(function () {
 /*===========================================================================================================================*/
 
 async function handlFormSubmit(event){ //기존 form 액션말고 fetch로 변경
+  showLoad();
   const form=document.querySelector("form#deployForm");
   event.preventDefault();
   const requestURI = "/services";
@@ -144,7 +145,6 @@ async function handlFormSubmit(event){ //기존 form 액션말고 fetch로 변�
   };
   try {
     const response = await fetch(url, options);
-    showLoad();
     if (response.ok) {
       window.location = "/containerList.html";
     }
