@@ -13,9 +13,14 @@ window.TrackJS &&
 
 function startHTML() {
   const logoutButton = document.querySelector("a#logoutButton");
-  const withdrawalButton = document.querySelector("a#withdrawalButton");
+  const withdrawalModalButton = document.querySelector("a#withdrawalModalButton");
+
   logoutButton.addEventListener("click", logout);
-  withdrawalButton.addEventListener("click", withdrawal);
+  withdrawalModalButton.addEventListener("click", ()=>{
+    $("#withdrawalModal").modal("show");
+    const withdrawalButton=document.querySelector("button#withdrawalButton");
+    withdrawalButton.addEventListener("click",withdrawal);
+  });
 }
 
 $(document).ready(function () {
