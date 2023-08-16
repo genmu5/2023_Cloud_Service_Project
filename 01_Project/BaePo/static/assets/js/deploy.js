@@ -134,14 +134,13 @@ $(document).ready(function () {
 /*===========================================================================================================================*/
 
 async function handlFormSubmit(event){
+  const form=document.querySelector("form#deployForm");
   event.preventDefault();
   const requestURI = "/services";
   const url = BASE_URL + requestURI;
   const options = {
     method: "POST",
-    headers:{
-      "Content-Type":"multipart/form-data"
-    }
+    body: new FormData(form)
   };
   try {
     const response = await fetch(url, options);
