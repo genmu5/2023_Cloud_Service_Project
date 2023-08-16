@@ -224,8 +224,8 @@ def containerDeploy_page():
         # else:
         #     return '.zip 파일을 업로드 해주세요.'
  
-        # IP 생성까지 반복 호출 -----------------------------------------------------------------------------
-        # while True:
+        # # IP 생성까지 반복 호출 -----------------------------------------------------------------------------
+        # while True:     # 무한 반복이므로 배포 실패했을 경우, 타임아웃을 걸어서 Fail 반환하도록
         #     if returnServicetIP(namespace):
         #         break
 
@@ -264,13 +264,10 @@ def containerDeploy_page():
         with open(data_file_path, 'w', encoding='utf-8') as fp:
             json.dump(user_data, fp, sort_keys=True, indent=4, ensure_ascii=False)
 
-        # if returnServicetIP(namespace) != '':
         return render_template('containerList.html')
         
     elif request.method == 'GET':
-        # while True:     # 무한 반복이므로 배포 실패했을 경우, 타임아웃을 걸어서 Fail 반환하도록
-        #     if returnServicetIP(namespace) != '':
-                return json.dumps({oauth2.email: user_data[oauth2.email]}, ensure_ascii=False)
+        return json.dumps({oauth2.email: user_data[oauth2.email]}, ensure_ascii=False)
     return 'Fail'
 ######################################################################################################################################
 # 업데이트 & 수정
@@ -362,21 +359,25 @@ def containerEditDeploy_page(service_name):
         # else:
         #     return '.zip 파일을 업로드 해주세요.'
 
-        # while True:
+        # while True:       # 무한 반복이므로 배포 실패했을 경우, 타임아웃을 걸어서 Fail 반환하도록
         #     if returnServicetIP(namespace):
         #         break
+
+        getIP = returnServicetIP(namespace)
+        # returnServiceIP() 반환값 ip를 data.json 에 추가하기
+        for element in getUserData:
+            if element["Service Name"] == service_name:
+                element["Service IP"] = getIP
 
         # JSON 파일에 데이터를 저장 (ensure_ascii 옵션을 False로 설정하여 한글이 유니코드로 저장되도록 함)
         with open(data_file_path, 'w', encoding='utf-8') as fp:
             json.dump(user_data, fp, sort_keys=True, indent=4, ensure_ascii=False)
 
-        # if returnServicetIP(namespace) != '':
         return make_response('', 204)
+    
     elif request.method == 'GET':
-        # while True:     # 무한 반복이므로 배포 실패했을 경우, 타임아웃을 걸어서 Fail 반환하도록
-        #     if returnServicetIP(namespace) != '':
-                return json.dumps({oauth2.email: user_data[oauth2.email]}, ensure_ascii=False)
-######################################################################################################################################
+        return json.dumps({oauth2.email: user_data[oauth2.email]}, ensure_ascii=False)
+#####################################################################################################################################
 # 컨테이너 제어 작업 / pip install paramiko
 # run / pause / refresh  동작 버튼 
 # run : POST /services/{service-name}/containers/{container-name} + 'body에 run 문자열"
@@ -440,7 +441,7 @@ def returnContainerStatus(service_name, container_service_name): #test #test_Fro
         print('Refresh currentStatus', currentStatus)
         ssh.close()
 
-        return render_template('containerList.html', userData=json.dumps({"state" : currentStatus}, ensure_ascii=False)) 
+        return json.dumps({"state" : currentStatus}, ensure_ascii=False)
         # 해당 서비스 컨테이너의 Status List 값만 반환 (ex. ['Running', 'Running'])
     # 'run' / 'pause' 버튼 동작 --------------------------------------------------------------------------------
     elif request.method == 'POST':  # run /pause
@@ -584,27 +585,27 @@ def getContainerStatus(namespace):
 # 해당 폴더에서 미리 userSource 폴더 안에서 [1. git init] [2. git remote add origin <깃허브주소링크>] 셋팅해주어야 함.
 # 폴더 경로 -> userSource/{user_email}/{program_name}/{unzip_files}
 # teamnonstop github 엑세스 토큰 - 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
-# def upload_to_github(local_path):
-#     try:
-#         # Git 초기화
-#         #subprocess.call(['git', 'init'], cwd=local_path, shell=True)
+def upload_to_github(local_path):
+    try:
+        # Git 초기화
+        #subprocess.call(['git', 'init'], cwd=local_path, shell=True)
 
-#         # git pull 먼저 실행
-#         subprocess.call(['git pull origin main'], cwd=local_path, shell=True)
+        # git pull 먼저 실행
+        subprocess.call(['git pull origin main'], cwd=local_path, shell=True)
 
-#         # 모든 파일을 스테이징
-#         subprocess.call(['git add .'], cwd=local_path, shell=True)
+        # 모든 파일을 스테이징
+        subprocess.call(['git add .'], cwd=local_path, shell=True)
 
-#         # 커밋 메시지 작성
-#         commit_message = oauth2.email
-#         subprocess.call(['git commit -m', commit_message], cwd=local_path, shell=True)
+        # 커밋 메시지 작성
+        commit_message = oauth2.email
+        subprocess.call(['git commit -m', commit_message], cwd=local_path, shell=True)
 
-#         # GitHub 원격 저장소로 푸시 / origin master 브랜치로 생성해야 push 됨 // 리포지토리 수정 필요!!!!!!!!!!!!!!!
-#         subprocess.call(['git push origin main'], cwd=local_path, shell=True)
-# # 'https://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@github.com/teamnonstop/test_upload.git'
-#     except subprocess.CalledProcessError as e:
-#         print(f"Error occurred during Git commands: {e}")
-#         # 예외 처리
+        # GitHub 원격 저장소로 푸시 / origin master 브랜치로 생성해야 push 됨 // 리포지토리 수정 필요!!!!!!!!!!!!!!!
+        subprocess.call(['git push origin main'], cwd=local_path, shell=True)
+# 'https://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@github.com/teamnonstop/test_upload.git'
+    except subprocess.CalledProcessError as e:
+        print(f"Error occurred during Git commands: {e}")
+        # 예외 처리
 ######################################################################################################################################
 #start_test
 if __name__ == '__main__':
