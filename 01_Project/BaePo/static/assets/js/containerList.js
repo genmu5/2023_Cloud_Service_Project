@@ -18,6 +18,7 @@ const CARD_TITLE_CLASS="card-title";
 
 const ROW_CLASS="row";
 const COL_1_CLASS="col-1";
+const COL_2_CLASS="col-2";
 const COL_3_CLASS="col-3";
 const COL_4_CLASS="col-4";
 const COL_10_CLASS="col-10";
@@ -370,16 +371,19 @@ async function handleContainerRefreshButtonClick(event){ //container state stop 
     method: "GET",
   };
   try{
+    const stateBadge=event.target.parentNode.parentNode.firstChild;
+    console.log(stateBadge);
     const response=await fetch(url,options);
+
     if(response.ok){
       const obj=await response.json()
       let resultState=null;
       const states=obj[CONTAINER_KEY_STATE];
       states.forEach((state)=>resultState=state);
       
-      const stateBadge=cardDiv.querySelector("div.card-header span.state-badge");
       stateBadge.classList.toggle(BADGE_INFO_CLASS,resultState==="Running");
       stateBadge.classList.toggle(BADGE_DANGER_CLASS,resultState!=="Running");
+      //window.location.reload();
     } else {
       console.log(`${url}로 ${options.method}요청 비정상 응답 : [${response.status}] ${response.statusText}`);
     }
@@ -447,17 +451,13 @@ function makeContainerElement(containerInfo){ //container data받아서 html에 
   containerPauseButton.addEventListener("click",handleContainerPauseButtonClick);
   containerPauseButton.querySelector("i").classList.add(ICON_BUTTON_PAUSE_CLASS);
 
-  const state=containerInfo[CONTAINER_KEY_STATE];
-  if(state==="Running"){
-    if(badgeSpan.classList.contains(BADGE_DANGER_CLASS)) {
-      badgeSpan.classList.remove(BADGE_DANGER_CLASS);
-    }
+  const states=containerInfo[CONTAINER_KEY_STATE];
+  let resultState=null;
+  states.forEach((state)=>resultState=state);
+  if(resultState==="Running"){
     badgeSpan.classList.add(BADGE_INFO_CLASS);
     containerRunButton.classList.add(DISABLED_CLASS);
   }else{ 
-    if(badgeSpan.classList.contains(BADGE_INFO_CLASS)) {
-      badgeSpan.classList.remove(BADGE_INFO_CLASS);
-    }
     badgeSpan.classList.add(BADGE_DANGER_CLASS);
     containerPauseButton.classList.add(DISABLED_CLASS);
   }
@@ -496,16 +496,26 @@ function makeCardTitleHeader(serviceName,serviceIP){
   serviceIPH3.innerText=serviceIP ? serviceIP : "";
   //card title for managing button
   const serviceManagingButton=document.createElement("button");
-  serviceManagingButton.classList.add(CARD_TITLE_CLASS, BTN_CLASS,BTN_PRIMARY_CLASS,BTN_LINK_CLASS,COL_3_CLASS,TEXT_RIGHT_CLASS);
+  serviceManagingButton.classList.add(CARD_TITLE_CLASS, BTN_CLASS,BTN_PRIMARY_CLASS,BTN_LINK_CLASS,COL_2_CLASS,TEXT_RIGHT_CLASS);
   serviceManagingButton.id="serviceManagingButton";
   const serviceMangingButtonIcon=document.createElement("i");
   serviceMangingButtonIcon.classList.add(TIMS_ICONS_CLASS,ICON_SETTING_GEAR_63_CLASS);
   serviceManagingButton.addEventListener("click",()=>window.location.href="editDeploy.html")
   serviceManagingButton.appendChild(serviceMangingButtonIcon);
+  /*
+  //card title for refersh button
+  const refreshButton=document.createElement("button");
+  refreshButton.classList.add(CARD_TITLE_CLASS,BTN_CLASS,COL_1_CLASS,TEXT_RIGHT_CLASS,BTN_PRIMARY_CLASS,BTN_LINK_CLASS);
+  refreshButton.addEventListener("click",handleContainerRefreshButtonClick);
+  const refreshI=document.createElement("i");
+  refreshI.classList.add(TIMS_ICONS_CLASS,ICON_REFRESH_02_CLASS);
+  refreshButton.appendChild(refreshI);
+  */
 
   cardHeaderDiv.appendChild(serviceNameH3);
   cardHeaderDiv.appendChild(serviceIPH3);
   cardHeaderDiv.appendChild(serviceManagingButton);
+  //cardHeaderDiv.appendChild(refreshButton);
   return cardHeaderDiv;
 }
 
