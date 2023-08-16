@@ -584,27 +584,27 @@ def getContainerStatus(namespace):
 # 해당 폴더에서 미리 userSource 폴더 안에서 [1. git init] [2. git remote add origin <깃허브주소링크>] 셋팅해주어야 함.
 # 폴더 경로 -> userSource/{user_email}/{program_name}/{unzip_files}
 # teamnonstop github 엑세스 토큰 - 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
-def upload_to_github(local_path):
-    try:
-        # Git 초기화
-        #subprocess.call(['git', 'init'], cwd=local_path, shell=True)
+# def upload_to_github(local_path):
+#     try:
+#         # Git 초기화
+#         #subprocess.call(['git', 'init'], cwd=local_path, shell=True)
 
-        # git pull 먼저 실행
-        subprocess.call(['git pull origin main'], cwd=local_path, shell=True)
+#         # git pull 먼저 실행
+#         subprocess.call(['git pull origin main'], cwd=local_path, shell=True)
 
-        # 모든 파일을 스테이징
-        subprocess.call(['git add .'], cwd=local_path, shell=True)
+#         # 모든 파일을 스테이징
+#         subprocess.call(['git add .'], cwd=local_path, shell=True)
 
-        # 커밋 메시지 작성
-        commit_message = oauth2.email
-        subprocess.call(['git commit -m', commit_message], cwd=local_path, shell=True)
+#         # 커밋 메시지 작성
+#         commit_message = oauth2.email
+#         subprocess.call(['git commit -m', commit_message], cwd=local_path, shell=True)
 
-        # GitHub 원격 저장소로 푸시 / origin master 브랜치로 생성해야 push 됨 // 리포지토리 수정 필요!!!!!!!!!!!!!!!
-        subprocess.call(['git push origin main'], cwd=local_path, shell=True)
-# 'https://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@github.com/teamnonstop/test_upload.git'
-    except subprocess.CalledProcessError as e:
-        print(f"Error occurred during Git commands: {e}")
-        # 예외 처리
+#         # GitHub 원격 저장소로 푸시 / origin master 브랜치로 생성해야 push 됨 // 리포지토리 수정 필요!!!!!!!!!!!!!!!
+#         subprocess.call(['git push origin main'], cwd=local_path, shell=True)
+# # 'https://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@github.com/teamnonstop/test_upload.git'
+#     except subprocess.CalledProcessError as e:
+#         print(f"Error occurred during Git commands: {e}")
+#         # 예외 처리
 ######################################################################################################################################
 #start_test
 if __name__ == '__main__':
