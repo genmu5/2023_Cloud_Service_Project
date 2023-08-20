@@ -142,9 +142,9 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title" id="serviceNameRuleModalLabel">
+        <h3 class="modal-title" id="serviceNameRuleModalLabel">
           <strong>※ 서비스 이름 작성 시 요구사항 ※</strong>
-        </h4>
+        </h3>
         <button
           type="button"
           class="close"
@@ -185,9 +185,9 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title" id="fileUploadRuleModalLabel">
+        <h3 class="modal-title" id="fileUploadRuleModalLabel">
           <strong>※ 서비스 파일 업로드 시 요구사항 ※</strong>
-        </h4>
+        </h3>
         <button
           type="button"
           class="close"
@@ -245,8 +245,10 @@
             <div class="col-md-12">
               <div class="card">
                 <div class="card-header">
-                  <h3 class="card-title">서비스 배포하기</h3>
+                  <h2 class="card-title">서비스 배포하기</h2>
                 </div>
+              </div>
+              <div class="card">
                 <form
                   method="POST"
                   id="deployForm"
@@ -256,14 +258,15 @@
                   <div class="card-body">
                     <div class="form-row">
                       <div class="form-group col-12">
-                        <h5 class="mt-4 my-2">
+                        <h4 class="mt-4 my-2">
                           서비스 이름
                           <i
                             class="fas fa-info-circle text-primary ml-2"
                             style="cursor: pointer"
                             onclick="serviceNameRuleModal()"
+                            required
                           ></i>
-                        </h5>
+                        </h4>
                         <input
                           type="text"
                           class="form-control"
@@ -276,14 +279,15 @@
                     </div>
                     <div class="form-row">
                       <div class="form-group">
-                        <h5 class="mt-4 my-2">
+                        <h4 class="mt-4 my-2">
                           서비스 파일 업로드
                           <i
                             class="fas fa-info-circle text-primary ml-2"
                             style="cursor: pointer"
                             onclick="fileUploadRuleModal()"
+                            required
                           ></i>
-                        </h5>
+                        </h4>
                         <small id="devEnvHelp" class="form-text text-muted"
                           >프론트, 백, 데이터베이스 파일을 하나의 zip파일로
                           압축해서 올려주세요</small
@@ -312,7 +316,7 @@
                     <div class="form-row">
                       <div class="form-group col-12">
                         <label for="frontEnv">
-                          <h5 class="mt-4 my-2">프론트엔드 개발환경</h5>
+                          <h4 class="mt-4 my-2">프론트엔드 개발환경</h4>
                           <small id="frontEnvHelp" class="form-text text-muted"
                             >프론트엔드 개발 환경을 선택해주세요</small
                           >
@@ -330,7 +334,7 @@
                           <option value="4">react</option>
                         </select>
                         <label for="dbEnv">
-                          <h5 class="mt-4 my-2">데이터베이스 개발환경</h5>
+                          <h4 class="mt-4 my-2">데이터베이스 개발환경</h4>
                           <small id="dbEnvHelp" class="form-text text-muted"
                             >데이터베이스 개발 환경을 선택해주세요</small
                           >
@@ -347,7 +351,7 @@
                           <option value="11">mongodb</option>
                         </select>
                         <label for="backEnv">
-                          <h5 class="mt-4 my-2">백엔드 개발환경</h5>
+                          <h4 class="mt-4 my-2">백엔드 개발환경</h4>
                           <small id="backEnvHelp" class="form-text text-muted"
                             >백엔드 개발 환경을 선택해주세요</small
                           >
@@ -387,6 +391,9 @@
                   </div>
 
                   <div class="card-footer text-center">
+                    <div class="text-center">
+                      위의 요구사항을 확인하셨다면 체크 해주세요.
+                    </div>
                     <button type="submit" class="btn btn-fill btn-primary">
                       배포하기
                     </button>

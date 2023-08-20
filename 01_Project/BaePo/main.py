@@ -220,18 +220,18 @@ def containerDeploy_page():
             os.remove(file_path)  # .zip 파일 삭제
                     
             # GitHub에 업로드
-            # upload_to_github(os.path.join(BASE_DIR, 'test_upload'))
+            upload_to_github(os.path.join(BASE_DIR, 'test_upload'))
         else:
             return '.zip 파일을 업로드 해주세요.'
 
         # IP 생성까지 반복 호출 -----------------------------------------------------------------------------
         while True:     # 무한 반복이므로 배포 실패했을 경우, 타임아웃을 걸어서 Fail 반환하도록
-            if returnServicetIP(namespace) != '':
+            if returnServicetIP(namespace) != '' and returnServicetIP(namespace) != "<pending>":
                 print('returnServicetIP(namespace) is not \'\' : ', returnServicetIP(namespace))
                 break
             else:
                 print('returnServicetIP(namespace) is \'\' : ', returnServicetIP(namespace))
-                break
+                # break
 
         # 프론트/백/DB -> json 파일에 서비스명 + 컨테이너명(서비스명_Front/서비스면_Back/서비스명_DB) 설정
         # 'state' 컨테이너 status 값 파싱 & JSON 파일에 저장
@@ -359,18 +359,18 @@ def containerEditDeploy_page(service_name):
                 f.write(namespace)
             os.remove(file_path)  # .zip 파일 삭제
             # GitHub에 업로드
-            # upload_to_github(os.path.join(BASE_DIR, 'test_upload'))
+            upload_to_github(os.path.join(BASE_DIR, 'test_upload'))
         else:
             return '.zip 파일을 업로드 해주세요.'
 
         # IP 생성까지 반복 호출 -----------------------------------------------------------------------------
         while True:     # 무한 반복이므로 배포 실패했을 경우, 타임아웃을 걸어서 Fail 반환하도록
-            if returnServicetIP(namespace) != '':
+            if returnServicetIP(namespace) != '' and returnServicetIP(namespace) != "<pending>":
                 print('returnServicetIP(namespace) is not \'\' : ', returnServicetIP(namespace))
                 break
             else:
                 print('returnServicetIP(namespace) is \'\' : ', returnServicetIP(namespace))
-                break
+                # break
 
         getIP = returnServicetIP(namespace)
         # returnServiceIP() 반환값 ip를 data.json 에 추가하기
@@ -529,7 +529,7 @@ def returnPodName(service_name, container_name):
     user_email = oauth2.email
     program_name = service_name
     
-    podName = {}
+    podName = []
     user_name = ""              # 사용자 명 파싱하기 - 이메일 값에서 특수문자 제외
     user_name = user_email.replace('@', '').replace('.', '')
     namespace = user_name+'-'+program_name
@@ -537,18 +537,18 @@ def returnPodName(service_name, container_name):
     getPodList = getContainerStatus(namespace)
     if container_name.endswith("_Front"):
         for name in getPodList.keys():
-            if 'frontend' in podName:
+            if 'frontend' in name:
                 podName.append(name)
     elif container_name.endswith("_Back"):
         for name in getPodList.keys():
-            if 'backend' in podName:
+            if 'backend' in name:
                 podName.append(name)
     elif container_name.endswith("_DB"):
         for name in getPodList.keys():
-            if 'db' in podName:
+            if 'db' in name:
                 podName.append(name)
-
-    return json.dumps({podName}, ensure_ascii=False) # NAME : STATUS 파싱한 딕셔너리 반환
+    print('podName', podName)
+    return json.dumps({"podNames": podName}, ensure_ascii=False) # NAME : STATUS 파싱한 딕셔너리 반환
 ######################################################################################################################################
 # Kubectl get svc -n namespace -------------------------------------------------------------------------------------------------------
 # 배포 결과 - 서비스 IP 가져와서 프론트로 반환  
