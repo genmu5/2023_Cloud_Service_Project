@@ -61,6 +61,8 @@ const CONTAINER_KEY_STATE="state";
 
 //custom style for containerCardElement
 const PINK_BORDER_STYLE="border:1px solid #e44cc4";
+const RUN_BUTTON_CLASS="run-button";
+const PAUSE_BUTTON_CLASS="pause-button";
 
 //custom class name 
 const MONITORING_BUTTON_CLASS="monitoring-btn";
@@ -362,27 +364,42 @@ async function handleContainerPauseButtonClick(event){ //container state stop ->
 
 async function handleContainerRefreshButtonClick(event){ //container state stop -> run변경
   console.log("refresh butto clicked");
+
   const cardDiv=event.target.parentNode.parentNode.parentNode;
+  const stateBadge=cardDiv.querySelector("span");
+  const runButton=cardDiv.querySelector(`button.${RUN_BUTTON_CLASS}`);
+  const pauseButton=cardDiv.querySelector(`button.${PAUSE_BUTTON_CLASS}`);
+
   const serviceName=localStorage.getItem(LOCAL_STORAGE_KEY_SERVICE_NAME);
   const containerName=cardDiv.id;
+
   const requestURI = `/services/${serviceName}/containers/${containerName}`;
   const url = BASE_URL + requestURI;
   const options = {
     method: "GET",
   };
   try{
-    const stateBadge=event.target.parentNode.parentNode.firstChild;
-    console.log(stateBadge);
     const response=await fetch(url,options);
-
     if(response.ok){
       const obj=await response.json()
       let resultState=null;
       const states=obj[CONTAINER_KEY_STATE];
       states.forEach((state)=>resultState=state);
+
+      if(resultState==="Running"){
+        stateBadge.classList.remove(BADGE_DANGER_CLASS);
+        stateBadge.classList.add(BADGE_INFO_CLASS);
+        runButton.classList.add(DISABLED_CLASS);
+        pauseButton.classList.remove(DISABLED_CLASS);
+      } else {
+        stateBadge.classList.remove(BADGE_INFO_CLASS);
+        stateBadge.classList.add(BADGE_DANGER_CLASS);
+        runButton.classList.remove(DISABLED_CLASS);
+        pauseButton.classList.add(DISABLED_CLASS);
+
+      }
       
-      stateBadge.classList.toggle(BADGE_INFO_CLASS,resultState==="Running");
-      stateBadge.classList.toggle(BADGE_DANGER_CLASS,resultState!=="Running");
+
       //window.location.reload();
     } else {
       console.log(`${url}로 ${options.method}요청 비정상 응답 : [${response.status}] ${response.statusText}`);
@@ -444,10 +461,12 @@ function makeContainerElement(containerInfo){ //container data받아서 html에 
   sampleButton.appendChild(sampleI);
 
   const containerRunButton=sampleButton.cloneNode(true);
+  containerRunButton.classList.add(RUN_BUTTON_CLASS);
   containerRunButton.addEventListener("click",handleContainerRunButtonClick);
   containerRunButton.querySelector("i").classList.add(ICON_TRIANGLE_RIGHT_17_CLASS);
 
   const containerPauseButton=sampleButton.cloneNode(true);
+  containerPauseButton.classList.add(PAUSE_BUTTON_CLASS);
   containerPauseButton.addEventListener("click",handleContainerPauseButtonClick);
   containerPauseButton.querySelector("i").classList.add(ICON_BUTTON_PAUSE_CLASS);
 
