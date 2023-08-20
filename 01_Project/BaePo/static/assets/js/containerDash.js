@@ -18,6 +18,7 @@ const CARD_CHART_CLASS="card-chart";
 const ROW_CLASS="row";
 const COL_1_CLASS="col-1";
 const COL_4_CLASS="col-4";
+const COL_6_CLASS="col-6";
 const COL_10_CLASS="col-10";
 const COL_12_CLASS="col-12";
 const COL_LG_6_CLASS="col-lg-6";
@@ -58,8 +59,8 @@ const CONTAINER_KEY_STATE="state";
 const PINK_BORDER_STYLE="border:1px solid #e44cc4";
 
 //custom class name 
-const MONITORING_BUTTON_CLASS="monitoring-btn";
-const MANAGING_BUTTON_CLASS="managing-btn";
+const FIRST_ROW_CLASS="first-row";
+const SECOND_ROW_CLASS="second-row";
 
 //baseURL used in fetch api
 const BASE_URL=window.location.origin;
@@ -97,31 +98,36 @@ async function loadData(){
   }
 }
 
-async function printDash(nameSpace,deploymentName){
+async function printDash(nameSpace){
   const pods=await getPodNames();
   const pod1=pods[0];
   const pod2=pods.length===1?pods[0]:pods[1];
   const iframeSrcStringObj={
     //for pods
     pod1:{
-      pod1CreatedTime:`http://150.136.87.94:3000/d-solo/4b545447f/baepo-pods?orgId=1&var-node=&var-duration=5m&var-namespace=${nameSpace}&var-pod1=${pod1}&var-pod2=${pod2}&from=1692525314780&to=1692536114780&panelId=179`, 
-      pod1ResourceUsage:`http://150.136.87.94:3000/d-solo/4b545447f/baepo-pods?orgId=1&var-node=&var-duration=5m&var-namespace=${nameSpace}&var-pod1=${pod1}&var-pod2=${pod2}&from=1692526878911&to=1692537678912&panelId=171`,
-      pod1NetworkTraffic:`http://150.136.87.94:3000/d-solo/4b545447f/baepo-pods?orgId=1&var-node=&var-duration=5m&var-namespace=${nameSpace}&var-pod1=${pod1}&var-pod2=${pod2}&from=1692527011792&to=1692537811792&panelId=169`,
-      pod1MemoryStatus:`http://150.136.87.94:3000/d-solo/4b545447f/baepo-pods?orgId=1&var-node=&var-duration=5m&var-namespace=${nameSpace}&var-pod1=${pod1}&var-pod2=${pod2}&from=1692527117501&to=1692537917501&panelId=180`,
+      CreatedTime:`http://150.136.87.94:3000/d-solo/4b545447f/baepo-pods?var-namespace=${nameSpace}&var-pod1=${pod1}&var-pod2=${pod2}&panelId=179`,
+      ResourceUsage:`http://150.136.87.94:3000/d-solo/4b545447f/baepo-pods?var-namespace=${nameSpace}&var-pod1=${pod1}&var-pod2=${pod2}&panelId=171`,
+      NetworkTraffic:`http://150.136.87.94:3000/d-solo/4b545447f/baepo-pods?var-namespace=${nameSpace}&var-pod1=${pod1}&var-pod2=${pod2}&panelId=169`,
+      MemoryStatus:`http://150.136.87.94:3000/d-solo/4b545447f/baepo-pods?var-namespace=${nameSpace}&var-pod1=${pod1}&var-pod2=${pod2}&panelId=180`,
     },
     pod2:{
-      pod2CreatedTime:`http://150.136.87.94:3000/d-solo/4b545447f/baepo-pods?orgId=1&var-node=&var-duration=5m&var-namespace=${nameSpace}&var-pod1=${pod1}&var-pod2=${pod2}&from=1692527485502&to=1692538285502&panelId=184`,
-      pod2ResourceUsage:`http://150.136.87.94:3000/d-solo/4b545447f/baepo-pods?orgId=1&var-node=&var-duration=5m&var-namespace=${nameSpace}&var-pod1=${pod1}&var-pod2=${pod2}&from=1692527540324&to=1692538340324&panelId=187`,
-      pod2NetworkTraffic:`http://150.136.87.94:3000/d-solo/4b545447f/baepo-pods?orgId=1&var-node=&var-duration=5m&var-namespace=${nameSpace}&var-pod1=${pod1}&var-pod2=${pod2}&from=1692527589059&to=1692538389059&panelId=189`,
-      pod2MemoryStatus:`http://150.136.87.94:3000/d-solo/4b545447f/baepo-pods?orgId=1&var-node=&var-duration=5m&var-namespace=${nameSpace}&var-pod1=${pod1}&var-pod2=${pod2}&from=1692527616569&to=1692538416569&panelId=190`
+      CreatedTime:`http://150.136.87.94:3000/d-solo/4b545447f/baepo-pods?var-namespace=${nameSpace}&var-pod1=${pod1}&var-pod2=${pod2}&panelId=184`,
+      ResourceUsage:`http://150.136.87.94:3000/d-solo/4b545447f/baepo-pods?var-namespace=${nameSpace}&var-pod1=${pod1}&var-pod2=${pod2}&panelId=187`,
+      NetworkTraffic:`http://150.136.87.94:3000/d-solo/4b545447f/baepo-pods?var-namespace=${nameSpace}&var-pod1=${pod1}&var-pod2=${pod2}&panelId=189`,
+      MemoryStatus:`http://150.136.87.94:3000/d-solo/4b545447f/baepo-pods?var-namespace=${nameSpace}&var-pod1=${pod1}&var-pod2=${pod2}&panelId=190`,
     }
   };
+  document.querySelector("div#pod1>div.card-header>h3").innerText=pod1;
+  document.querySelector("div#pod2>div.card-header>h3").innerText=pod2;
 
   if(pods.length===1){
-    makeDashElement("pod1",iframeSrcStringObj["pod1"]);
+    printDashElement("pod1",iframeSrcStringObj["pod1"]);
+    document.querySelector("div#pod2").setAttribute("display","none");
+
+
   } else{
-    makeDashElement("pod1",iframeSrcStringObj["pod1"]);
-    makeDashElement("pod2",iframeSrcStringObj["pod2"]);
+    printDashElement("pod1",iframeSrcStringObj["pod1"]);
+    printDashElement("pod2",iframeSrcStringObj["pod2"]);
   }
 }
 
@@ -133,7 +139,6 @@ function startHtml(){
 
   document.querySelector("#userEmail").innerText=userEmail;
 
-  console.log(document.querySelector("h4.card-title#containerName>p"));
   document.querySelector("h4.card-title#containerName>p").innerText=containerName;
 
   let nameSpace=userEmail.replace("@","")
@@ -168,35 +173,48 @@ $(document).ready(function () {
 /* common function ==========================================================================================================*/ 
 /*===========================================================================================================================*/ 
 
-function makeDashElement(cardName,srcObj){
-  const targetCard=document.querySelector(`div#${cardName}`);
-  const targetRowArr=[targetCard.firstChild,targetCard.lastChild]
-  //making sample
-  const sampleCard=document.createElement("div"); //<div class="col-lg-6" id="pod1">
-  sampleCard.classList.add(COL_LG_6_CLASS);
-  const cardChart=document.createElement("div");
-  cardChart.classList.add(CARD_CLASS,CARD_CHART_CLASS);
+function makeDashElement(){
+  const sampleCard=document.createElement("div"); //
+  sampleCard.classList.add(CARD_CLASS,COL_6_CLASS,MR_3_CLASS);
+  sampleCard.style=PINK_BORDER_STYLE;
   const cardHeader=document.createElement("div");
   cardHeader.classList.add(CARD_HEADER_CLASS);
   const h3=document.createElement("h3");
   cardHeader.appendChild(h3);
-  const cardBody=createElement("div");
+  const cardBody=document.createElement("div");
   cardBody.classList.add(CARD_BODY_CLASS);
   const iframe=document.createElement("iframe");
-  iframe.classList.add(MX_2_CLASS);
-  iframe.width="97%";iframe.height="100%";iframe.frameBorder="0";
+  iframe.width="97%";
+  iframe.height="100%";
+  iframe.frameBorder="0";
   cardBody.appendChild(iframe);
-  cardChart.appendChild(cardHeader);
-  cardChart.appendChild(cardBody);
-  sampleCard.append(cardChart);
+  sampleCard.appendChild(cardHeader);
+  sampleCard.appendChild(cardBody);
+  return sampleCard;
+}
 
-  const cnt=0;
-  const row=0;
+/*===========================================================================================================================*/ 
+
+function printDashElement(cardName,srcObj){
+  console.log("makeDashElement Func Start..");
+  console.log(srcObj);
+  const targetCard=document.querySelector(`div#${cardName}`)
+  const targetRowArr=[
+    targetCard.querySelector(`div.${FIRST_ROW_CLASS}`),
+    targetCard.querySelector(`div.${SECOND_ROW_CLASS}`),
+  ];
+  //making sample
+
+  let cnt=0;
+  let row=0;
   Object.keys(srcObj).forEach((key)=>{
-    const data=sampleCard.cloneNode(true);
+    const data=makeDashElement();
     data.querySelector("h3").innerText=key;
     data.querySelector("iframe").src=srcObj[key];
+    console.log("targetnode");
+    console.log(targetRowArr[row]);
     targetRowArr[row].appendChild(data);
+    cnt++;
     if(cnt%2==0)row++;
   });
 }
@@ -260,6 +278,7 @@ async function getPodNames(){
       if(response.ok){
         const jsonObj=await response.json();
         console.log(jsonObj);
+        console.log(jsonObj[objKey]);
         return jsonObj[objKey];
       }
       const userData=await response.json();
