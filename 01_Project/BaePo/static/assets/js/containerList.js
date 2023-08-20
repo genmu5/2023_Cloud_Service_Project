@@ -509,10 +509,16 @@ function makeCardTitleHeader(serviceName,serviceIP){
   serviceNameH3.id=serviceName;
   serviceNameH3.innerText=serviceName;
   //card title for service ip
+  const serviceIPA=document.createElement("a");
   const serviceIPH3=document.createElement("h3");
   serviceIPH3.classList.add(CARD_TITLE_CLASS,D_INLINE_CLASS,COL_4_CLASS,TEXT_CENTER_CLASS);
   serviceIPH3.id=serviceIP;
   serviceIPH3.innerText=serviceIP ? serviceIP : "";
+  serviceIPA.href=`http://${serviceIPH3.innerText}`;
+  serviceIPA.target="_blank";
+  serviceIPA.rel="noopener noreferrer";
+  serviceIPA.appendChild(serviceIPH3);
+
   //card title for managing button
   const serviceManagingButton=document.createElement("button");
   serviceManagingButton.classList.add(CARD_TITLE_CLASS, BTN_CLASS,BTN_PRIMARY_CLASS,BTN_LINK_CLASS,COL_2_CLASS,TEXT_RIGHT_CLASS);
@@ -521,18 +527,9 @@ function makeCardTitleHeader(serviceName,serviceIP){
   serviceMangingButtonIcon.classList.add(TIMS_ICONS_CLASS,ICON_SETTING_GEAR_63_CLASS);
   serviceManagingButton.addEventListener("click",()=>window.location.href="editDeploy.html")
   serviceManagingButton.appendChild(serviceMangingButtonIcon);
-  /*
-  //card title for refersh button
-  const refreshButton=document.createElement("button");
-  refreshButton.classList.add(CARD_TITLE_CLASS,BTN_CLASS,COL_1_CLASS,TEXT_RIGHT_CLASS,BTN_PRIMARY_CLASS,BTN_LINK_CLASS);
-  refreshButton.addEventListener("click",handleContainerRefreshButtonClick);
-  const refreshI=document.createElement("i");
-  refreshI.classList.add(TIMS_ICONS_CLASS,ICON_REFRESH_02_CLASS);
-  refreshButton.appendChild(refreshI);
-  */
 
   cardHeaderDiv.appendChild(serviceNameH3);
-  cardHeaderDiv.appendChild(serviceIPH3);
+  cardHeaderDiv.appendChild(serviceIPA);
   cardHeaderDiv.appendChild(serviceManagingButton);
   //cardHeaderDiv.appendChild(refreshButton);
   return cardHeaderDiv;
