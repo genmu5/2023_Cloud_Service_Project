@@ -410,9 +410,9 @@ def returnContainerStatus(service_name, container_service_name): #test #test_Fro
     locate = '' # frontend / backend / db
 
     if container_service_name.endswith("_Front"):
-        locate = 'front'
+        locate = 'frontend'
     elif container_service_name.endswith("_Back"):
-        locate = 'back'
+        locate = 'backend'
     elif container_service_name.endswith("_Db"):
         locate = 'db'
 
@@ -422,8 +422,30 @@ def returnContainerStatus(service_name, container_service_name): #test #test_Fro
     print(result_dict.items())
     currentStatus = []
 
+    # 'run' / 'pause' 버튼 동작 --------------------------------------------------------------------------------
+    if request.method == 'POST':  # run /pause
+        getButton = request.get_json()
+        button = getButton['work']
+
+        if button == 'run':
+            scale = '2'
+            if locate == 'db':
+                scale = '1'
+        elif button == 'pause':
+            scale = '0'
+        else:
+            ssh.close()
+            return 'Error : cannot find button'
+        # ssh 명령어 실행
+        ssh.exec_command('kubectl scale deployment ' + locate +'-deployment --replicas='+ scale +' -n '+ namespace) # kubectl scale deployment front-deployment --replocas -n {$namespace}
+        
+        result_dict = getContainerStatus(namespace)
+
+        ssh.close()
+        return make_response('', 204)
+    
     # 'refresh' 버튼 동작 --------------------------------------------------------------------------------------
-    if request.method == 'GET':  
+    elif request.method == 'GET':  
         # status 리스트에서 'frontend' 있으면, currentStatus 배열에 status 값 저장
         for getNameKey in result_dict.keys():
             if locate in getNameKey:
@@ -452,26 +474,6 @@ def returnContainerStatus(service_name, container_service_name): #test #test_Fro
 
         return json.dumps({"state" : currentStatus}, ensure_ascii=False)
         # 해당 서비스 컨테이너의 Status List 값만 반환 (ex. ['Running', 'Running'])
-    # 'run' / 'pause' 버튼 동작 --------------------------------------------------------------------------------
-    elif request.method == 'POST':  # run /pause
-        getButton = request.get_json()
-        button = getButton['work']
-
-        if button == 'run':
-            scale = '2'
-            if locate == 'db':
-                scale = '1'
-        elif button == 'pause':
-            scale = '0'
-        else:
-            ssh.close()
-            return 'Error : cannot find button'
-        # ssh 명령어 실행
-        ssh.exec_command('kubectl scale deployment ' + locate +'-deployment --replicas='+ scale +' -n '+ namespace) # kubectl scale deployment front-deployment --replocas -n {$namespace}
-        result_dict = getContainerStatus(namespace)
-
-        ssh.close()
-        return make_response('', 204)
     
     return currentStatus # 해당 서비스 컨테이너의 Status List 값만 반환 (ex. ['Running', 'Running'])
 ######################################################################################################################################
@@ -600,18 +602,18 @@ def upload_to_github(local_path):
         #subprocess.call(['git', 'init'], cwd=local_path, shell=True)
 
         # git pull 먼저 실행
-        subprocess.call(['git pull origin main'], cwd=local_path, shell=True)
+        subprocess.call(['git', 'pull'], cwd=local_path, shell=True)
 
         # 모든 파일을 스테이징
-        subprocess.call(['git add .'], cwd=local_path, shell=True)
+        subprocess.call(['git', 'add', '.'], cwd=local_path, shell=True)
 
         # 커밋 메시지 작성
-        commit_message = oauth2.email
-        subprocess.call(['git commit -m', commit_message], cwd=local_path, shell=True)
+        commit_message = 'File upload'
+        subprocess.call(['git', 'commit', '-m', commit_message], cwd=local_path, shell=True)
 
         # GitHub 원격 저장소로 푸시 / origin master 브랜치로 생성해야 push 됨 // 리포지토리 수정 필요!!!!!!!!!!!!!!!
-        subprocess.call(['git push origin main'], cwd=local_path, shell=True)
-# 'https://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@github.com/teamnonstop/test_upload.git'
+        subprocess.call(['git', 'push'], cwd=local_path, shell=True)
+#, 'https://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@github.com/teamnonstop/test_upload.git'
     except subprocess.CalledProcessError as e:
         print(f"Error occurred during Git commands: {e}")
         # 예외 처리
