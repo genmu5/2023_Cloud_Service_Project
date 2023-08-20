@@ -548,7 +548,7 @@ def returnPodName(service_name, container_name):
             if 'db' in podName:
                 podName.append(name)
 
-    return podName # NAME : STATUS 파싱한 딕셔너리 반환
+    return json.dumps({podName}, ensure_ascii=False) # NAME : STATUS 파싱한 딕셔너리 반환
 ######################################################################################################################################
 # Kubectl get svc -n namespace -------------------------------------------------------------------------------------------------------
 # 배포 결과 - 서비스 IP 가져와서 프론트로 반환  
