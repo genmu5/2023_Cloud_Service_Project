@@ -523,6 +523,33 @@ def deleteService(service_name): #test #test_Front #run
     #ssh.close()
     return json.dumps({oauth2.email: user_data[oauth2.email]}, ensure_ascii=False)
 ######################################################################################################################################
+# pod name 반환
+@app.route('/services/<string:service_name>/containers/<string:container_name>/pods', methods=['GET'])
+def returnPodName(service_name, container_name):
+    user_email = oauth2.email
+    program_name = service_name
+    
+    podName = {}
+    user_name = ""              # 사용자 명 파싱하기 - 이메일 값에서 특수문자 제외
+    user_name = user_email.replace('@', '').replace('.', '')
+    namespace = user_name+'-'+program_name
+    
+    getPodList = getContainerStatus(namespace)
+    if container_name.endswith("_Front"):
+        for name in getPodList.keys():
+            if 'frontend' in podName:
+                podName.append(name)
+    elif container_name.endswith("_Back"):
+        for name in getPodList.keys():
+            if 'backend' in podName:
+                podName.append(name)
+    elif container_name.endswith("_DB"):
+        for name in getPodList.keys():
+            if 'db' in podName:
+                podName.append(name)
+
+    return podName # NAME : STATUS 파싱한 딕셔너리 반환
+######################################################################################################################################
 # Kubectl get svc -n namespace -------------------------------------------------------------------------------------------------------
 # 배포 결과 - 서비스 IP 가져와서 프론트로 반환  
 def returnServicetIP(namespace):
