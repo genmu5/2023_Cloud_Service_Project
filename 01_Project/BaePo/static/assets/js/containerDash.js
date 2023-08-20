@@ -13,13 +13,16 @@ const CARD_HEADER_CLASS="card-header";
 const CARD_GROUP_CLASS="card-group";
 const CARD_FOOTER_CLASS="card-footer";
 const CARD_TITLE_CLASS="card-title";
+const CARD_CHART_CLASS="card-chart";
 
 const ROW_CLASS="row";
 const COL_1_CLASS="col-1";
 const COL_4_CLASS="col-4";
 const COL_10_CLASS="col-10";
 const COL_12_CLASS="col-12";
+const COL_LG_6_CLASS="col-lg-6";
 const MR_3_CLASS="mr-3";
+const MX_2_CLASS="mx-2";
 const PR_0_CLASS="pr-0";
 
 const BADGE_CLASS="badge";
@@ -94,6 +97,34 @@ async function loadData(){
   }
 }
 
+async function printDash(nameSpace,deploymentName){
+  const pods=await getPodNames();
+  const pod1=pods[0];
+  const pod2=pods.length===1?pods[0]:pods[1];
+  const iframeSrcStringObj={
+    //for pods
+    pod1:{
+      pod1CreatedTime:`http://150.136.87.94:3000/d-solo/4b545447f/baepo-pods?orgId=1&var-node=&var-duration=5m&var-namespace=${nameSpace}&var-pod1=${pod1}&var-pod2=${pod2}&from=1692525314780&to=1692536114780&panelId=179`, 
+      pod1ResourceUsage:`http://150.136.87.94:3000/d-solo/4b545447f/baepo-pods?orgId=1&var-node=&var-duration=5m&var-namespace=${nameSpace}&var-pod1=${pod1}&var-pod2=${pod2}&from=1692526878911&to=1692537678912&panelId=171`,
+      pod1NetworkTraffic:`http://150.136.87.94:3000/d-solo/4b545447f/baepo-pods?orgId=1&var-node=&var-duration=5m&var-namespace=${nameSpace}&var-pod1=${pod1}&var-pod2=${pod2}&from=1692527011792&to=1692537811792&panelId=169`,
+      pod1MemoryStatus:`http://150.136.87.94:3000/d-solo/4b545447f/baepo-pods?orgId=1&var-node=&var-duration=5m&var-namespace=${nameSpace}&var-pod1=${pod1}&var-pod2=${pod2}&from=1692527117501&to=1692537917501&panelId=180`,
+    },
+    pod2:{
+      pod2CreatedTime:`http://150.136.87.94:3000/d-solo/4b545447f/baepo-pods?orgId=1&var-node=&var-duration=5m&var-namespace=${nameSpace}&var-pod1=${pod1}&var-pod2=${pod2}&from=1692527485502&to=1692538285502&panelId=184`,
+      pod2ResourceUsage:`http://150.136.87.94:3000/d-solo/4b545447f/baepo-pods?orgId=1&var-node=&var-duration=5m&var-namespace=${nameSpace}&var-pod1=${pod1}&var-pod2=${pod2}&from=1692527540324&to=1692538340324&panelId=187`,
+      pod2NetworkTraffic:`http://150.136.87.94:3000/d-solo/4b545447f/baepo-pods?orgId=1&var-node=&var-duration=5m&var-namespace=${nameSpace}&var-pod1=${pod1}&var-pod2=${pod2}&from=1692527589059&to=1692538389059&panelId=189`,
+      pod2MemoryStatus:`http://150.136.87.94:3000/d-solo/4b545447f/baepo-pods?orgId=1&var-node=&var-duration=5m&var-namespace=${nameSpace}&var-pod1=${pod1}&var-pod2=${pod2}&from=1692527616569&to=1692538416569&panelId=190`
+    }
+  };
+
+  if(pods.length===1){
+    makeDashElement("pod1",iframeSrcStringObj["pod1"]);
+  } else{
+    makeDashElement("pod1",iframeSrcStringObj["pod1"]);
+    makeDashElement("pod2",iframeSrcStringObj["pod2"]);
+  }
+}
+
 function startHtml(){
   loadData();
   //console.log(serviceName);
@@ -102,6 +133,7 @@ function startHtml(){
 
   document.querySelector("#userEmail").innerText=userEmail;
 
+  console.log(document.querySelector("h4.card-title#containerName>p"));
   document.querySelector("h4.card-title#containerName>p").innerText=containerName;
 
   let nameSpace=userEmail.replace("@","")
@@ -114,20 +146,9 @@ function startHtml(){
   let deploymentName=containerName.slice(underbarIndex+1).toLowerCase();
   deploymentName=(deploymentName.length>2)?deploymentName+"end":deploymentName; 
   deploymentName=deploymentName+"-deployment";
-  console.log(deploymentName);
+  //console.log(deploymentName);
 
-  const iframeSrcStringObj={
-    "requestDurationPercentiles":`http://150.136.87.94:3000/d-solo/e424dc61-1f8e-4765-ab32-287ef63ab35d/baepo?orgId=1&var-Node=All&var-Namespace=${nameSpace}&var-Deployment=${deploymentName}&from=1691680244817&to=1691681144817&panelId=46`,
-    "requestPerMinutes":`http://150.136.87.94:3000/d-solo/e424dc61-1f8e-4765-ab32-287ef63ab35d/baepo?orgId=1&var-Node=All&var-Namespace=${nameSpace}&var-Deployment=${deploymentName}&from=1691680436298&to=1691681336298&panelId=44`,
-    "cpuUsage":`http://150.136.87.94:3000/d-solo/e424dc61-1f8e-4765-ab32-287ef63ab35d/baepo?orgId=1&var-Node=All&var-Namespace=${nameSpace}&var-Deployment=${deploymentName}&from=1691680504234&to=1691681404234&panelId=17`,
-    "memoryUsage":`http://150.136.87.94:3000/d-solo/e424dc61-1f8e-4765-ab32-287ef63ab35d/baepo?orgId=1&var-Node=All&var-Namespace=${nameSpace}&var-Deployment=${deploymentName}&from=1691680558801&to=1691681458801&panelId=25`,
-  };
-
-  Object.keys(iframeSrcStringObj).forEach((key)=>{
-    const target=document.querySelector(`div.card#${key} iframe`);
-    target.src=iframeSrcStringObj[key]
-    //푸시용 주석
-  });
+  printDash(nameSpace,deploymentName);
 
   const logoutButton=document.querySelector("#logoutButton");
   logoutButton.addEventListener("click",logout);
@@ -145,6 +166,41 @@ $(document).ready(function () {
 
 /*===========================================================================================================================*/ 
 /* common function ==========================================================================================================*/ 
+/*===========================================================================================================================*/ 
+
+function makeDashElement(cardName,srcObj){
+  const targetCard=document.querySelector(`div#${cardName}`);
+  const targetRowArr=[targetCard.firstChild,targetCard.lastChild]
+  //making sample
+  const sampleCard=document.createElement("div"); //<div class="col-lg-6" id="pod1">
+  sampleCard.classList.add(COL_LG_6_CLASS);
+  const cardChart=document.createElement("div");
+  cardChart.classList.add(CARD_CLASS,CARD_CHART_CLASS);
+  const cardHeader=document.createElement("div");
+  cardHeader.classList.add(CARD_HEADER_CLASS);
+  const h3=document.createElement("h3");
+  cardHeader.appendChild(h3);
+  const cardBody=createElement("div");
+  cardBody.classList.add(CARD_BODY_CLASS);
+  const iframe=document.createElement("iframe");
+  iframe.classList.add(MX_2_CLASS);
+  iframe.width="97%";iframe.height="100%";iframe.frameBorder="0";
+  cardBody.appendChild(iframe);
+  cardChart.appendChild(cardHeader);
+  cardChart.appendChild(cardBody);
+  sampleCard.append(cardChart);
+
+  const cnt=0;
+  const row=0;
+  Object.keys(srcObj).forEach((key)=>{
+    const data=sampleCard.cloneNode(true);
+    data.querySelector("h3").innerText=key;
+    data.querySelector("iframe").src=srcObj[key];
+    targetRowArr[row].appendChild(data);
+    if(cnt%2==0)row++;
+  });
+}
+
 /*===========================================================================================================================*/ 
 
 async function logout(){
@@ -182,6 +238,30 @@ async function getUserData(userEmail){
     };
     try{
       const response=await fetch(url,options);
+      const userData=await response.json();
+      return userData[userEmail];
+  
+    } catch(error){
+      console.log(`${url}로 ${options.method}요청 작업 중 에러 발생 : \n${error}`);
+    }
+}
+
+/*====================================================================================================================*/ 
+
+async function getPodNames(){
+    const requestURI = `/services/${serviceName}/containers/${containerName}/pods`;
+    const url = BASE_URL + requestURI;
+    const objKey="podNames";
+    const options = {
+      method: "GET",
+    };
+    try{
+      const response=await fetch(url,options);
+      if(response.ok){
+        const jsonObj=await response.json();
+        console.log(jsonObj);
+        return jsonObj[objKey];
+      }
       const userData=await response.json();
       return userData[userEmail];
   
