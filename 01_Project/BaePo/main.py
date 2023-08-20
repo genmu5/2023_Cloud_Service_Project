@@ -6,6 +6,8 @@ import zipfile
 import json
 import paramiko # pip install paramiko
 import datetime as dt
+import signal   # For timeout
+import time     # For timeout
 
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
@@ -143,7 +145,8 @@ def containerDeploy_page():
         front_env = request.form.getlist('frontEnv')     # 선택된 개발 환경 리스트 받기
         db_env = request.form.getlist('dbEnv')           # 선택된 개발 환경 리스트 받기
         back_env = request.form.getlist('backEnv')       # 선택된 개발 환경 리스트 받기
-        
+        file_name = file.name
+
         user_name = ""              # 사용자 명 파싱하기 - 이메일 값에서 특수문자 제외
         user_name = user_email.replace('@', '').replace('.', '')
         namespace = user_name+'-'+program_name
@@ -189,9 +192,6 @@ def containerDeploy_page():
             containers.append(db)
 
         # 소스코드 unzip 하고 저장하기 ------------------------------------------------------------------------------------------------------
-        user_name = ""              # 사용자 명 파싱하기 - 이메일 값에서 특수문자 제외
-        user_name = user_email.replace('@', '').replace('.', '')
-
         # BASE 경로 -> {현재 실행되는 path}/userSource/{user_email}
         folder_path = os.path.join(BASE_DIR, 'test_upload', user_name)
         os.makedirs(folder_path, exist_ok=True)
@@ -220,14 +220,18 @@ def containerDeploy_page():
             os.remove(file_path)  # .zip 파일 삭제
                     
             # GitHub에 업로드
-        #     upload_to_github(os.path.join(BASE_DIR, 'test_upload'))
-        # else:
-        #     return '.zip 파일을 업로드 해주세요.'
- 
-        # # IP 생성까지 반복 호출 -----------------------------------------------------------------------------
-        # while True:     # 무한 반복이므로 배포 실패했을 경우, 타임아웃을 걸어서 Fail 반환하도록
-        #     if returnServicetIP(namespace):
-        #         break
+            # upload_to_github(os.path.join(BASE_DIR, 'test_upload'))
+        else:
+            return '.zip 파일을 업로드 해주세요.'
+
+        # IP 생성까지 반복 호출 -----------------------------------------------------------------------------
+        while True:     # 무한 반복이므로 배포 실패했을 경우, 타임아웃을 걸어서 Fail 반환하도록
+            if returnServicetIP(namespace) != '':
+                print('returnServicetIP(namespace) is not \'\' : ', returnServicetIP(namespace))
+                break
+            else:
+                print('returnServicetIP(namespace) is \'\' : ', returnServicetIP(namespace))
+                break
 
         # 프론트/백/DB -> json 파일에 서비스명 + 컨테이너명(서비스명_Front/서비스면_Back/서비스명_DB) 설정
         # 'state' 컨테이너 status 값 파싱 & JSON 파일에 저장
@@ -265,7 +269,7 @@ def containerDeploy_page():
             json.dump(user_data, fp, sort_keys=True, indent=4, ensure_ascii=False)
 
         return render_template('containerList.html')
-        
+      
     elif request.method == 'GET':
         return json.dumps({oauth2.email: user_data[oauth2.email]}, ensure_ascii=False)
     return 'Fail'
@@ -355,13 +359,18 @@ def containerEditDeploy_page(service_name):
                 f.write(namespace)
             os.remove(file_path)  # .zip 파일 삭제
             # GitHub에 업로드
-        #     upload_to_github(os.path.join(BASE_DIR, 'test_upload'))
-        # else:
-        #     return '.zip 파일을 업로드 해주세요.'
+            # upload_to_github(os.path.join(BASE_DIR, 'test_upload'))
+        else:
+            return '.zip 파일을 업로드 해주세요.'
 
-        # while True:       # 무한 반복이므로 배포 실패했을 경우, 타임아웃을 걸어서 Fail 반환하도록
-        #     if returnServicetIP(namespace):
-        #         break
+        # IP 생성까지 반복 호출 -----------------------------------------------------------------------------
+        while True:     # 무한 반복이므로 배포 실패했을 경우, 타임아웃을 걸어서 Fail 반환하도록
+            if returnServicetIP(namespace) != '':
+                print('returnServicetIP(namespace) is not \'\' : ', returnServicetIP(namespace))
+                break
+            else:
+                print('returnServicetIP(namespace) is \'\' : ', returnServicetIP(namespace))
+                break
 
         getIP = returnServicetIP(namespace)
         # returnServiceIP() 반환값 ip를 data.json 에 추가하기
