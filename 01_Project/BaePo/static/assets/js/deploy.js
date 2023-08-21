@@ -160,8 +160,10 @@ async function handlFormSubmit(event){ //기존 form 액션말고 fetch로 변�
 
 function showLoad() {
   const loader = document.querySelector("div.loader");
+  const alert = document.querySelector("div.alert");
   const wrapper = document.querySelector("div.wrapper");
   wrapper.style.display="none";
+  alert.style.display="block";
   loader.style.display="block";
 };
 
@@ -170,6 +172,8 @@ function showLoad() {
 function showPage() {
   const loader = document.querySelector("div.loader");
   const container = document.querySelector("div.wrapper");
+  const alert = document.querySelector("div.alert");
+  alert.style.display="none";
   loader.style.display="none";
   container.style.display="block";
 };
