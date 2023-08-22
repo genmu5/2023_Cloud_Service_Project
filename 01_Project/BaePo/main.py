@@ -153,7 +153,7 @@ def containerDeploy_page():
 
         # json 데이터 초기화 & data.json 파일에 데이터 저장 ------------------------------------------------------------------------------------------------------
         containers = []
-        envx = [0]*17
+        envx = [0]*19
         front = {}
         back = {}
         db = {}
@@ -293,7 +293,7 @@ def containerEditDeploy_page(service_name):
         # 컨테이너 status 값 파싱
         result_dict = getContainerStatus(namespace)
         print(result_dict.items())
-        envxa = [0]*17
+        envxa = [0]*19
         frontStatus = []
         backStatuse = []
         dbStatus = []
