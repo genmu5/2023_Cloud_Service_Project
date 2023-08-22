@@ -139,7 +139,8 @@ function startHtml(){
 
   document.querySelector("#userEmail").innerText=userEmail;
 
-  document.querySelector("h4.card-title#containerName>p").innerText=containerName;
+  document.querySelector("h3.card-title#containerName>p").innerText=containerName;
+  //document.querySelector("h3.card-title#containerName>p").classList.add(FONT_WEIGHT_BOLD_CLASS);
 
   let nameSpace=userEmail.replace("@","")
   nameSpace=nameSpace.replace(/\./g,"");
