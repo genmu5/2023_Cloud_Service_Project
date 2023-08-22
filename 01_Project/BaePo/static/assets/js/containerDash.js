@@ -153,6 +153,11 @@ function startHtml(){
   deploymentName=deploymentName+"-deployment";
   //console.log(deploymentName);
 
+  const newContainerBtn = document.querySelector("#deployButton");
+  newContainerBtn.addEventListener("click", function () {
+    window.location.href = "deploy.html";
+  });
+
   printDash(nameSpace,deploymentName);
 
   const logoutButton=document.querySelector("#logoutButton");
